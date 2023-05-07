@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "137663854879",
+    "project_id": "supergas-bd5e2",
+    "storage_bucket": "supergas-bd5e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137663854879:android:f31a7976ce94228c7b182a",
+        "android_client_info": {
+          "package_name": "com.example.supergas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "137663854879-vu7jdvahi3gsebedcf9lbt1bfe1vsu52.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApWwlYoBosK9B5h1gsN1vr9z5_31WE-OM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "137663854879-vu7jdvahi3gsebedcf9lbt1bfe1vsu52.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
