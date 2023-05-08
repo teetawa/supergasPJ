@@ -47,15 +47,11 @@ class _HomeState extends State<Home> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
-            body: _selectedIndex == 0
-                ? Product(adminData: adminData, myAddress: myAddress)
-                : _selectedIndex == 1
-                    ? Cart(
-                        username: snapshot.data.toString(),
-                      )
-                    : Order(
-                        username: snapshot.data.toString(),
-                      ),
+            body: [
+              Product(adminData: adminData, myAddress: myAddress),
+              Cart(username: snapshot.data.toString()),
+              Order(username: snapshot.data.toString()),
+            ][_selectedIndex],
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
