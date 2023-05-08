@@ -10,11 +10,13 @@ class ProductDetail extends StatefulWidget {
     required this.productName,
     required this.productPrice,
     required this.productImage,
+    this.over = false,
   }) : super(key: key);
 
   String productName;
   String productImage;
   String productPrice;
+  bool over;
 
   @override
   State<ProductDetail> createState() => _ProductDetailState();
@@ -23,8 +25,11 @@ class ProductDetail extends StatefulWidget {
 class _ProductDetailState extends State<ProductDetail> {
   int quantity = 1;
   bool loading = false;
+
   @override
   Widget build(BuildContext context) {
+    widget.over;
+
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
@@ -92,37 +97,38 @@ class _ProductDetailState extends State<ProductDetail> {
             child: loading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        loading = true;
-                      });
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      FirebaseFirestore.instance.collection('carts').add({
-                        'product_name': widget.productName,
-                        'product_price': widget.productPrice,
-                        'product_image': widget.productImage,
-                        'quantity': quantity,
-                        'username': prefs.getString('username'),
-                        'creat_at': DateTime.now(),
-                        'update_at': DateTime.now(),
-                        'status': "รอดำเนินการ",
-                        'slip': '',
-                        'user_address': '',
-                        'user_phone': '',
-                      });
-                      setState(() {
-                        loading = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "ทำการสั่งซื้อเรียบร้อยแล้ว",
-                          ),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    },
+                    onPressed: widget.over
+                        ? null
+                        : () async {
+                            setState(() {
+                              loading = true;
+                            });
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            FirebaseFirestore.instance.collection('carts').add({
+                              'product_name': widget.productName,
+                              'product_price': widget.productPrice,
+                              'product_image': widget.productImage,
+                              'quantity': quantity,
+                              'username': prefs.getString('username'),
+                              'creat_at': DateTime.now(),
+                              'update_at': DateTime.now(),
+                              'status': "รอดำเนินการ",
+                              'slip': '',
+                              'user_address': '',
+                              'user_phone': '',
+                            });
+                            setState(() {
+                              loading = false;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "ทำการสั่งซื้อเรียบร้อยแล้ว",
+                                ),
+                              ),
+                            );
+                            Navigator.pop(context);
+                          },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(

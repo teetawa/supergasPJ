@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:supergas/src/admin/data_time_extension.dart';
 
 class ReportOrderAdmin extends StatefulWidget {
@@ -13,8 +14,7 @@ class ReportOrderAdmin extends StatefulWidget {
 
 class _ReportOrderAdminState extends State<ReportOrderAdmin> {
   final _formKey = GlobalKey<FormState>();
-  DateTimeRange selectedDates =
-      DateTimeRange(start: DateTime.now(), end: DateTime.now());
+  DateTimeRange selectedDates = DateTimeRange(start: DateTime.now(), end: DateTime.now());
 
   @override
   Widget build(BuildContext context) {
@@ -54,51 +54,48 @@ class _ReportOrderAdminState extends State<ReportOrderAdmin> {
           padding: const EdgeInsets.all(30),
           child: Column(
             children: [
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    ElevatedButton(
-                      child: const Text("ขอรายงานคำสั่งซื้อ"),
-                      onPressed: () async {
-                        final DateTimeRange? dateTimeRange =
-                            await showDateRangePicker(
-                                context: context,
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(3000));
-                        selectedDates = dateTimeRange ?? selectedDates;
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("วันที่ : ${DateFormat('dd MMM yyyy').format(selectedDates.start)}"),
+                  const SizedBox(height: 12),
+                  Text("ถึง  : ${DateFormat('dd MMM yyyy').format(selectedDates.end)}"),
+                  const SizedBox(height: 12),
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.date_range),
+                    label: const Text("ขอรายงานคำสั่งซื้อ"),
+                    onPressed: () async {
+                      final DateTimeRange? dateTimeRange = await showDateRangePicker(
+                          context: context, firstDate: DateTime(2000), lastDate: DateTime(3000));
+                      selectedDates = dateTimeRange ?? selectedDates;
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              
               const SizedBox(height: 16),
               const Divider(
                 thickness: 2,
               ),
               StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('carts').snapshots(),
+                stream: FirebaseFirestore.instance.collection('carts').snapshots(),
                 builder: ((BuildContext _, AsyncSnapshot snapshot) {
-                  List<dynamic>data = [];
+                  List<dynamic> data = [];
                   if (snapshot.hasData) {
-            
                     var raw = snapshot.data.docs;
-                    for (var i = 0; i<raw.length; i++) {
+                    for (var i = 0; i < raw.length; i++) {
                       var cart = raw[i];
                       var date = cart['update_at'].toDate();
-                      print(date);
-                         var isBetween = DateTimeExtension.isBetween(
-
-                              date,from: selectedDates.start, to: selectedDates.end);
-                              if (isBetween ){
-                                data.add(cart);
-                              }
+                      var isBetween = DateTimeExtension.isBetween(
+                        date,
+                        from: selectedDates.start,
+                        to: selectedDates.end,
+                      );
+                      if (isBetween) {
+                        data.add(cart);
+                      }
                     }
-                    return data.length == 0
+                    return data.isEmpty
                         ? const Center(child: Text('ไม่มีสินค้าในตะกร้า'))
                         : Expanded(
                             child: Column(
@@ -111,30 +108,24 @@ class _ReportOrderAdminState extends State<ReportOrderAdmin> {
                                     shrinkWrap: true,
                                     itemCount: data.length,
                                     itemBuilder: (_, index) {
-                                      var total = int.parse(
-                                              data[index]['product_price']) *
-                                          data[index]['quantity'];
+                                      var total = int.parse(data[index]['product_price']) * data[index]['quantity'];
                                       totalprice = totalprice + total;
                                       return Card(
                                         child: Column(
                                           children: [
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 Image.memory(
-                                                  base64Decode(data[index]
-                                                      ['product_image']),
+                                                  base64Decode(data[index]['product_image']),
                                                   width: width * 0.2,
                                                   gaplessPlayback: true,
                                                 ),
                                                 Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      data[index]
-                                                          ['product_name'],
+                                                      data[index]['product_name'],
                                                       style: TextStyle(
                                                         fontSize: 24,
                                                         shadows: shadow,
@@ -166,12 +157,10 @@ class _ReportOrderAdminState extends State<ReportOrderAdmin> {
                                               ],
                                             ),
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               children: [
                                                 Image.memory(
-                                                  base64Decode(
-                                                      data[index]['slip']),
+                                                  base64Decode(data[index]['slip']),
                                                   width: width * 0.5,
                                                   gaplessPlayback: true,
                                                 ),

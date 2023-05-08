@@ -6,8 +6,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supergas/src/user/product_detail.dart';
 import 'package:supergas/src/user/profile.dart';
 
+import '../util/distance_helper.dart';
+
 class Product extends StatelessWidget {
-  const Product({Key? key}) : super(key: key);
+  final String myAddress;
+  final Map<String, dynamic> adminData;
+  Product({Key? key, required this.adminData, required this.myAddress}) : super(key: key);
+
+  double overDistanceKm = 15.0;
+
+  String getCalculate(String address) {
+    double lat1 = 0.0;
+    double lng1 = 0.0;
+    double lat2 = 0.0;
+    double lng2 = 0.0;
+
+    if (address.isNotEmpty) {
+      lat1 = double.parse(address.split(",")[0]);
+      lat2 = double.parse(address.split(",")[1]);
+    }
+
+    lat2 = double.parse(myAddress.split(",")[0]);
+    lng2 = double.parse(myAddress.split(",")[1]);
+
+    try {
+      return calculateDistance(lat1, lng1, lat2, lng2).toStringAsFixed(2);
+    } catch (e) {
+      return "0";
+    }
+  }
+
+  overDistance(String km) {
+    return double.parse(km) > overDistanceKm;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +89,8 @@ class Product extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: data.length,
                 itemBuilder: (_, index) {
+                  bool over = overDistance(getCalculate(getSafeValue(adminData, 'address')));
+
                   return InkWell(
                     onTap: () => Navigator.push(
                       context,
@@ -66,6 +99,7 @@ class Product extends StatelessWidget {
                           productName: data[index]['product_name'],
                           productImage: data[index]['product_image'],
                           productPrice: data[index]['product_price'],
+                          over: over,
                         ),
                       ),
                     ),
@@ -77,12 +111,33 @@ class Product extends StatelessWidget {
                             width: width * 0.2,
                             gaplessPlayback: true,
                           ),
-                          Text(
-                            data[index]['product_name'],
-                            style: TextStyle(
-                              fontSize: 28,
-                              shadows: shadow,
-                            ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data[index]['product_name'],
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  shadows: shadow,
+                                ),
+                              ),
+                              Text(
+                                "ระยะทาง : ${getCalculate(getSafeValue(adminData, 'address'))} km",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  shadows: shadow,
+                                ),
+                              ),
+                              if (over)
+                                Text(
+                                  'เกินระยะทางที่กำหนด',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    shadows: shadow,
+                                  ),
+                                ),
+                            ],
                           )
                         ],
                       ),
@@ -96,5 +151,13 @@ class Product extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getSafeValue(dynamic data, key) {
+    try {
+      return data[key];
+    } catch (e) {}
+
+    return "";
   }
 }
