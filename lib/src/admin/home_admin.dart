@@ -10,6 +10,7 @@ import 'package:supergas/src/admin/edit_user_admin.dart';
 import 'package:supergas/src/admin/manage_order_admin.dart';
 import 'package:supergas/src/admin/product_admin.dart';
 import 'package:supergas/src/admin/report_order_admin.dart';
+import 'package:supergas/src/admin/user_chat_list.dart';
 
 class HomeAdmin extends StatefulWidget {
   const HomeAdmin({Key? key}) : super(key: key);
@@ -116,7 +117,24 @@ class _HomeAdminState extends State<HomeAdmin> {
                   style: TextStyle(fontSize: 24),
                 ),
               ),
-            )
+            ),
+            SizedBox(
+              width: 250,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserChatList(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'การติดต่อกับผู้ใช้',
+                  style: TextStyle(fontSize: 24),
+                ),
+              ),
+            ),
           ],
         ),
       ),

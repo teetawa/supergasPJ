@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supergas/src/user/cart.dart';
+import 'package:supergas/src/user/chat.dart';
 import 'package:supergas/src/user/order.dart';
 import 'package:supergas/src/user/product.dart';
 
@@ -40,6 +41,17 @@ class _HomeState extends State<Home> {
     setState(() {});
   }
 
+  onLogout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('role');
+    prefs.remove('username');
+    Phoenix.rebirth(context);
+  }
+
+  toContactAdmin() {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ChatPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -48,9 +60,19 @@ class _HomeState extends State<Home> {
         if (snapshot.hasData) {
           return Scaffold(
             body: [
-              Product(adminData: adminData, myAddress: myAddress),
-              Cart(username: snapshot.data.toString()),
-              Order(username: snapshot.data.toString()),
+              Product(
+                adminData: adminData,
+                myAddress: myAddress,
+                onLogout: onLogout,
+              ),
+              Cart(
+                username: snapshot.data.toString(),
+                onLogout: onLogout,
+              ),
+              Order(
+                username: snapshot.data.toString(),
+                onLogout: onLogout,
+              ),
             ][_selectedIndex],
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
@@ -78,13 +100,8 @@ class _HomeState extends State<Home> {
               },
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.remove('role');
-                prefs.remove('username');
-                Phoenix.rebirth(context);
-              },
-              child: const Icon(Icons.logout),
+              onPressed: toContactAdmin,
+              child: const Icon(Icons.comment),
             ),
           );
         }

@@ -11,7 +11,8 @@ import '../util/distance_helper.dart';
 class Product extends StatelessWidget {
   final String myAddress;
   final Map<String, dynamic> adminData;
-  Product({Key? key, required this.adminData, required this.myAddress}) : super(key: key);
+  final VoidCallback onLogout;
+  Product({Key? key, required this.adminData, required this.myAddress, required this.onLogout}) : super(key: key);
 
   double overDistanceKm = 15.0;
 
@@ -60,22 +61,27 @@ class Product extends StatelessWidget {
         title: const Text('สินค้า'),
         actions: [
           IconButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(
-                      address: prefs.getString('address') ?? '',
-                      username: prefs.getString('username') ?? '',
-                      password: prefs.getString('password') ?? '',
-                      phoneNumber: prefs.getString('phoneNumber') ?? '',
-                      usernameId: prefs.getString('usernameId') ?? '',
-                    ),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Profile(
+                    address: prefs.getString('address') ?? '',
+                    username: prefs.getString('username') ?? '',
+                    password: prefs.getString('password') ?? '',
+                    phoneNumber: prefs.getString('phoneNumber') ?? '',
+                    usernameId: prefs.getString('usernameId') ?? '',
                   ),
-                );
-              },
-              icon: const Icon(Icons.person))
+                ),
+              );
+            },
+            icon: const Icon(Icons.person),
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: onLogout,
+          ),
         ],
       ),
       body: Padding(

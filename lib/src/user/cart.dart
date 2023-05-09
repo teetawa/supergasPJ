@@ -9,9 +9,10 @@ import 'package:supergas/src/user/profile.dart';
 import '../util/distance_helper.dart';
 
 class Cart extends StatefulWidget {
-  Cart({Key? key, required this.username}) : super(key: key);
+  Cart({Key? key, required this.username, required this.onLogout}) : super(key: key);
 
   String username;
+  final VoidCallback onLogout;
 
   @override
   State<Cart> createState() => _CartState();
@@ -85,22 +86,27 @@ class _CartState extends State<Cart> {
         title: const Text('ตะกร้าสินค้า'),
         actions: [
           IconButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(
-                      address: prefs.getString('address') ?? '',
-                      username: prefs.getString('username') ?? '',
-                      password: prefs.getString('password') ?? '',
-                      phoneNumber: prefs.getString('phoneNumber') ?? '',
-                      usernameId: prefs.getString('usernameId') ?? '',
-                    ),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Profile(
+                    address: prefs.getString('address') ?? '',
+                    username: prefs.getString('username') ?? '',
+                    password: prefs.getString('password') ?? '',
+                    phoneNumber: prefs.getString('phoneNumber') ?? '',
+                    usernameId: prefs.getString('usernameId') ?? '',
                   ),
-                );
-              },
-              icon: const Icon(Icons.person))
+                ),
+              );
+            },
+            icon: const Icon(Icons.person),
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: widget.onLogout,
+          ),
         ],
       ),
       body: Padding(

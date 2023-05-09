@@ -6,9 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supergas/src/user/profile.dart';
 
 class Order extends StatefulWidget {
-  Order({Key? key, required this.username}) : super(key: key);
+  Order({Key? key, required this.username, required this.onLogout}) : super(key: key);
 
   String username;
+  final VoidCallback onLogout;
 
   @override
   State<Order> createState() => _OrderState();
@@ -42,22 +43,27 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(
-                      address: prefs.getString('address') ?? '',
-                      username: prefs.getString('username') ?? '',
-                      password: prefs.getString('password') ?? '',
-                      phoneNumber: prefs.getString('phoneNumber') ?? '',
-                      usernameId: prefs.getString('usernameId') ?? '',
-                    ),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Profile(
+                    address: prefs.getString('address') ?? '',
+                    username: prefs.getString('username') ?? '',
+                    password: prefs.getString('password') ?? '',
+                    phoneNumber: prefs.getString('phoneNumber') ?? '',
+                    usernameId: prefs.getString('usernameId') ?? '',
                   ),
-                );
-              },
-              icon: const Icon(Icons.person))
+                ),
+              );
+            },
+            icon: const Icon(Icons.person),
+          ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: widget.onLogout,
+          ),
         ],
         title: const Text('จัดการคำสั่งซื้อ'),
         bottom: TabBar(
@@ -101,25 +107,20 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                           shrinkWrap: true,
                           itemCount: data.length,
                           itemBuilder: (_, index) {
-                            var total =
-                                int.parse(data[index]['product_price']) *
-                                    data[index]['quantity'];
+                            var total = int.parse(data[index]['product_price']) * data[index]['quantity'];
                             return Card(
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Image.memory(
-                                        base64Decode(
-                                            data[index]['product_image']),
+                                        base64Decode(data[index]['product_image']),
                                         width: width * 0.2,
                                         gaplessPlayback: true,
                                       ),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             data[index]['product_name'],
@@ -154,8 +155,7 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       Image.memory(
                                         base64Decode(data[index]['slip']),
@@ -188,26 +188,21 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                           shrinkWrap: true,
                           itemCount: data.length,
                           itemBuilder: (_, index) {
-                            var total =
-                                int.parse(data[index]['product_price']) *
-                                    data[index]['quantity'];
+                            var total = int.parse(data[index]['product_price']) * data[index]['quantity'];
                             return Card(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Image.memory(
-                                        base64Decode(
-                                            data[index]['product_image']),
+                                        base64Decode(data[index]['product_image']),
                                         width: width * 0.2,
                                         gaplessPlayback: true,
                                       ),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             data[index]['product_name'],
@@ -245,8 +240,7 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 16),
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'ชื่อคนสั่ง ${data[index]['username']}',
@@ -296,25 +290,20 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                           shrinkWrap: true,
                           itemCount: data.length,
                           itemBuilder: (_, index) {
-                            var total =
-                                int.parse(data[index]['product_price']) *
-                                    data[index]['quantity'];
+                            var total = int.parse(data[index]['product_price']) * data[index]['quantity'];
                             return Card(
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Image.memory(
-                                        base64Decode(
-                                            data[index]['product_image']),
+                                        base64Decode(data[index]['product_image']),
                                         width: width * 0.2,
                                         gaplessPlayback: true,
                                       ),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             data[index]['product_name'],
@@ -349,8 +338,7 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       Image.memory(
                                         base64Decode(data[index]['slip']),
@@ -383,25 +371,20 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                           shrinkWrap: true,
                           itemCount: data.length,
                           itemBuilder: (_, index) {
-                            var total =
-                                int.parse(data[index]['product_price']) *
-                                    data[index]['quantity'];
+                            var total = int.parse(data[index]['product_price']) * data[index]['quantity'];
                             return Card(
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Image.memory(
-                                        base64Decode(
-                                            data[index]['product_image']),
+                                        base64Decode(data[index]['product_image']),
                                         width: width * 0.2,
                                         gaplessPlayback: true,
                                       ),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             data[index]['product_name'],
@@ -436,8 +419,7 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       Image.memory(
                                         base64Decode(data[index]['slip']),
@@ -470,25 +452,20 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                           shrinkWrap: true,
                           itemCount: data.length,
                           itemBuilder: (_, index) {
-                            var total =
-                                int.parse(data[index]['product_price']) *
-                                    data[index]['quantity'];
+                            var total = int.parse(data[index]['product_price']) * data[index]['quantity'];
                             return Card(
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Image.memory(
-                                        base64Decode(
-                                            data[index]['product_image']),
+                                        base64Decode(data[index]['product_image']),
                                         width: width * 0.2,
                                         gaplessPlayback: true,
                                       ),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             data[index]['product_name'],
@@ -523,8 +500,7 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                                     ],
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       Image.memory(
                                         base64Decode(data[index]['slip']),
