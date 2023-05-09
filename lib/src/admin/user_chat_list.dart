@@ -60,7 +60,7 @@ class _UserChatListState extends State<UserChatList> {
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => ChatUserPage(data: lastChat)));
         },
-        title: Text(lastChat.text),
+        // title: Text(lastChat.text),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
